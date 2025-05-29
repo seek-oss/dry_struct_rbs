@@ -1,0 +1,18 @@
+# IDE
+.idea/
+*.iml
+
+# Bundler
+/.bundle/
+/vendor/bundle
+/Gemfile.lock
+
+# Build & artifacts
+/pkg/
+/coverage/
+/doc/
+/tmp/
+/log/
+
+# System files
+.DS_Store

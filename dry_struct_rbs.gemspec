@@ -1,0 +1,25 @@
+# frozen_string_literal: true
+
+Gem::Specification.new do |spec|
+  spec.name          = 'dry_struct_rbs'
+  spec.version       = '0.1.0'
+  spec.authors       = ['Dmitry Sadovnikov']
+  spec.email         = ['sadovnikov.js@gmail.com']
+  spec.summary       = 'Generate RBS signatures from Dry::Struct classes'
+  spec.description   = 'Automatically creates RBS type definitions for Dry::Struct schemas'
+  spec.homepage      = 'https://github.com/DmitrySadovnikov/dry_struct_rbs'
+  spec.license       = 'MIT'
+
+  spec.files         = Dir['lib/**/*', 'LICENSE.txt', 'README.md']
+  spec.require_paths = ['lib']
+
+  spec.required_ruby_version = '>= 3.0.0'
+
+  spec.add_dependency 'dry-struct', '~> 1.0'
+  spec.add_dependency 'rbs', '~> 2.0'
+
+  spec.add_development_dependency 'pry', '~> 0.14'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rspec', '~> 3.10'
+  spec.add_development_dependency 'rubocop', '~> 1.0'
+end
