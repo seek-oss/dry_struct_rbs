@@ -153,14 +153,13 @@ module DryStructRbs
     end
 
     def build_rbs_file_path(rb_file_name, class_name, namespace_stack = [])
-      relative_dir = File.dirname(rb_file_name).sub(%r{#{config[:project_root]}/}, '')
+      relative_dir = File.dirname(rb_file_name)
+      paths_to_substract = config[:ignored_dirs] + [config[:project_root]]
+      paths_to_substract.each { |path| relative_dir = relative_dir.sub(%r{^#{path}/}, '') }
       dir_parts = relative_dir.split('/')
       parent_namespaces = namespace_stack[0...-1].map { |n| underscore(n) }
       parent_namespaces.shift while !parent_namespaces.empty? && dir_parts.include?(parent_namespaces.first)
-      dir_parts = [config[:rbs_output_dir]]
-      dir_parts += relative_dir.split('/').reject { |d| config[:ignored_dirs].include?(d) }
-      dir_parts += parent_namespaces.reject(&:empty?)
-      dir = dir_parts.join('/')
+      dir = [config[:rbs_output_dir], relative_dir, parent_namespaces.reject(&:empty?)].join('/')
       File.join(dir, "#{underscore(class_name.split('::').last)}.rbs")
     end
 
