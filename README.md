@@ -8,7 +8,7 @@ Add to your Gemfile in the development group:
 
 ```ruby
 group :development do
-  gem 'dry_struct_rbs', 
+  gem 'dry_struct_rbs',
       git: 'https://github.com/seek-pass-oss/dry_struct_rbs',
       branch: 'master'
 end
@@ -55,6 +55,53 @@ bundle exec dry_struct_rbs app/models/user.rb -w -i app/models
 ```
 
 This will transform input paths like `app/models/user.rb` to `sig/user.rbs` instead of `sig/app/models/user.rbs`.
+
+## Transformation Example
+
+This gem automatically transforms your dry-struct Ruby classes into proper RBS type definitions. Here's an example:
+
+**Original Ruby class:**
+
+```ruby
+module Order
+  class Product < Dry::Struct
+    attribute :id, Types::Integer
+    attribute :name, Types::String
+    attribute :price, Types::Float
+    attribute :tags, Types::Array.of(Types::String)
+    attribute :metadata, Types::Hash.of(Types::String, Types::Any)
+    attribute :available, Types::Bool
+    attribute :description, Types::String.optional
+    attribute? :vendor_code, Types::Integer
+  end
+end
+```
+
+**Generated RBS type definition:**
+
+```ruby
+module Order
+  class Product < Dry::Struct
+    attr_reader id: Integer
+    
+    attr_reader name: String
+    
+    attr_reader price: Float
+    
+    attr_reader tags: Array[String]
+    
+    attr_reader metadata: Hash[String, untyped]
+    
+    attr_reader available: bool
+    
+    attr_reader description: String?
+    
+    attr_reader vendor_code: Integer?
+  end
+end
+```
+
+The gem handles various complex dry-types constructs and automatically maps them to their appropriate RBS equivalents.
 
 ## Contributing
 
