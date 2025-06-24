@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+require 'dry_struct_rbs'
+
+require 'optparse'
+
+options = {
+  write_files: false,
+  overwrite_files: false,
+  dry_types_namespace: 'Types'
+}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: dry_struct_rbs [directory_or_file] [options]'
+
+  opts.on('-w', '--write', 'Write RBS files') { options[:write_files] = true }
+  opts.on('-f', '--force', 'Overwrite existing files') { options[:overwrite_files] = true }
+  opts.on('-n NAMESPACE', '--namespace=NAMESPACE', 'Dry types namespace') { |v| options[:dry_types_namespace] = v }
+  opts.on('-i IGNORE,DIRS', '--ignore-dirs=IGNORE,DIRS', 'Directories to ignore (comma-separated)') do |v|
+    options[:ignored_dirs] = v.split(',').map(&:strip)
+  end
+end.parse!
+
+input = ARGV[0] || abort('directory_or_file is required')
+
+DryStructRbs::Generator.new(
+  input,
+  options
+).generate

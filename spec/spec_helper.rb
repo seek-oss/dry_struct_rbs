@@ -2,7 +2,6 @@
 
 require 'bundler/setup'
 require 'dry_struct_rbs'
-require 'dry-struct'
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = '.rspec_status'

@@ -1,54 +1,172 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'dry-struct'
-require 'rbs'
-require 'dry_struct_rbs'
 
-module Types
-  include Dry.Types()
-end
+RSpec.describe DryStructRbs::Generator do
+  subject(:result) { described_class.new(directory_or_file, config).generate }
 
-class Person < Dry::Struct
-  attribute :name, Types::String
-  attribute :age, Types::Integer
-  attribute :tags, Types::Array.of(Types::String)
-end
+  let(:config) { {} }
 
-RSpec.describe DryStructRBS::Generator do
-  subject(:generator) { described_class.new(Person) }
+  context 'with a file in input' do
+    let(:directory_or_file) { 'spec/fixtures/test_dtos/test_dto1.rb' }
 
-  describe '#generate' do
-    let(:declaration) { generator.generate }
+    it 'generates the correct RBS content' do
+      expected_rbs_content1 = <<~RBS
+        module TestDtos
+          class TestDto1 < Dry::Struct
+            attr_reader hsi: Hash[String, Integer]
 
-    it 'returns an RBS class declaration' do
-      expect(declaration).to be_a(RBS::AST::Declarations::Class)
-      expect(declaration.name.to_s).to eq('::Person')
+            attr_reader huu: Hash[untyped, untyped]
+
+            attr_reader as: Array[String]
+
+            attr_reader au: Array[untyped]?
+
+            attr_reader b: bool
+
+            attr_reader f: Float
+
+            attr_reader s: String
+
+            attr_reader so: String?
+
+            attr_reader t: Time
+
+            attr_reader i: Integer
+
+            attr_reader u: untyped
+          end
+        end
+      RBS
+
+      expect(result[0]).to eq(
+        {
+          rb_file_name: 'spec/fixtures/test_dtos/test_dto1.rb',
+          rbs_file_name: 'sig/spec/fixtures/test_dtos/test_dto1.rbs',
+          rbs_content: expected_rbs_content1
+        }
+      )
+    end
+  end
+
+  context 'with a directory in input' do
+    let(:directory_or_file) { 'spec/fixtures/test_dtos' }
+
+    let(:config) do
+      {
+        dry_types_namespace: 'My::Types'
+      }
     end
 
-    it 'includes attribute readers for all attributes' do
-      attr_names = declaration.members.select { |m| m.is_a?(RBS::AST::Members::AttrReader) }.map(&:name)
-      expect(attr_names).to contain_exactly(:name, :age, :tags)
+    it 'generates the correct RBS content' do
+      expected_rbs_content2 = <<~RBS
+        class TestDtos::TestDto2 < My::Dto::NonStrict
+          attr_reader hsi: Hash[String, Integer]
+
+          attr_reader huu: Hash[untyped, untyped]
+
+          attr_reader as: Array[String]
+
+          attr_reader au: Array[untyped]?
+
+          attr_reader b: bool
+
+          attr_reader f: Float
+
+          attr_reader s: String
+
+          attr_reader so: String?
+
+          attr_reader t: Time
+
+          attr_reader i: Integer
+
+          attr_reader u: untyped
+        end
+      RBS
+
+      expect(result[1]).to eq(
+        {
+          rb_file_name: 'spec/fixtures/test_dtos/test_dto2.rb',
+          rbs_file_name: 'sig/spec/fixtures/test_dtos/test_dto2.rbs',
+          rbs_content: expected_rbs_content2
+        }
+      )
     end
+  end
 
-    it 'assigns correct types to attributes' do
-      name_attr = declaration.members.find { |m| m.is_a?(RBS::AST::Members::AttrReader) && m.name == :name }
-      age_attr  = declaration.members.find { |m| m.is_a?(RBS::AST::Members::AttrReader) && m.name == :age }
-      tags_attr = declaration.members.find { |m| m.is_a?(RBS::AST::Members::AttrReader) && m.name == :tags }
+  context 'without types namespace' do
+    let(:config) { {} }
+    let(:directory_or_file) { 'spec/fixtures/test_dtos/test_dto3.rb' }
 
-      expect(name_attr.type.to_s).to eq('String')
-      expect(age_attr.type.to_s).to eq('Integer')
-      expect(tags_attr.type.to_s).to eq('Array[String]')
-    end
+    it 'generates the correct RBS content' do
+      expected_rbs_content3 = <<~RBS
+        module TestDtos::ModuleAgain::AndAgain
+          class TestDto3 < Dry::Struct
+            attr_reader hsi: Hash[String, Integer]
 
-    it 'includes an initialize method with keyword arguments for all attributes' do
-      init_method = declaration.members.find do |m|
-        m.is_a?(RBS::AST::Members::MethodDefinition) && m.name == :initialize
-      end
-      expect(init_method).not_to be_nil
+            attr_reader huu: Hash[untyped, untyped]
 
-      param_names = init_method.types.first.type.required_keywords.map(&:name)
-      expect(param_names).to contain_exactly(:name, :age, :tags)
+            attr_reader as: Array[String]
+
+            attr_reader au: Array[untyped]?
+
+            attr_reader b: bool
+
+            attr_reader f: Float
+
+            attr_reader s: String
+
+            attr_reader so: String?
+
+            attr_reader t: Time
+
+            attr_reader i: Integer
+
+            attr_reader u: untyped
+          end
+        end
+      RBS
+
+      expect(result[0]).to eq(
+        {
+          rb_file_name: 'spec/fixtures/test_dtos/test_dto3.rb',
+          rbs_file_name: 'sig/spec/fixtures/test_dtos/module_again/and_again/test_dto3.rbs',
+          rbs_content: expected_rbs_content3
+        }
+      )
+
+      expected_rbs_content4 = <<~RBS
+        module TestDtos::ModuleAgain::AndAgain
+          class TestDto4 < Dry::Struct
+            attr_reader u: untyped
+          end
+        end
+      RBS
+      expect(result[1]).to eq(
+        {
+          rb_file_name: 'spec/fixtures/test_dtos/test_dto3.rb',
+          rbs_file_name: 'sig/spec/fixtures/test_dtos/module_again/and_again/test_dto4.rbs',
+          rbs_content: expected_rbs_content4
+        }
+      )
+
+      expected_rbs_content5 = <<~RBS
+        module TestDtos::ModuleAgain::AndAgain
+          class TestDto4
+            class TestDto5 < Dry::Struct
+              attr_reader u: untyped
+            end
+          end
+        end
+      RBS
+      expect(result[2]).to eq(
+        {
+          rb_file_name: 'spec/fixtures/test_dtos/test_dto3.rb',
+          rbs_file_name: 'sig/spec/fixtures/test_dtos/module_again/and_again/test_dto4/test_dto5.rbs',
+          rbs_content: expected_rbs_content5
+        }
+      )
     end
   end
 end
