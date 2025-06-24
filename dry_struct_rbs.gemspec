@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.0.0'
 
   spec.add_development_dependency 'dry-struct', '~> 1.0'
-  spec.add_development_dependency 'parser', '~> 3.0'
+  spec.add_development_dependency 'prism', '~> 1.4.0'
   spec.add_development_dependency 'rbs', '~> 3.0'
   spec.add_dependency 'unparser', '~> 0.6'
 

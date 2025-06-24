@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'parser/current'
 require 'unparser'
 require 'fileutils'
 require 'rbs'
 require 'stringio'
+require 'prism'
 
 module DryStructRbs
   class Generator
@@ -47,9 +47,7 @@ module DryStructRbs
     end
 
     def parse_file(file_path)
-      buffer = Parser::Source::Buffer.new(file_path)
-      buffer.source = File.read(file_path)
-      Parser::CurrentRuby.new.parse(buffer)
+      Prism::Translation::Parser.parse_file(file_path)
     end
 
     def traverse_ast(node, file_path, namespace_stack = [], namespace_types = [])
