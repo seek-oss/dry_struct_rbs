@@ -105,8 +105,8 @@ The gem handles various complex dry-types constructs and automatically maps them
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/seek-pass-oss/dry_struct_rbs.
+We welcome contributions from the community! Please check our [contribution guidelines](CONTRIBUTING.md) for more details on how to get involved.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [MIT License](LICENSE).
