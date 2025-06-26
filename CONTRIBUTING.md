@@ -4,7 +4,7 @@ Thank you for considering contributing to DryStructRbs! This document provides g
 
 ## Development Setup
 
-1. Fork the repository on GitHub: https://github.com/seek-pass-oss/dry_struct_rbs
+1. Fork the repository on GitHub: https://github.com/seek-oss/dry_struct_rbs
 2. Clone your fork locally:
 ```
 git clone git@github.com:YOUR-USERNAME/dry_struct_rbs.git

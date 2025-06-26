@@ -9,7 +9,7 @@ Add to your Gemfile in the development group:
 ```ruby
 group :development do
   gem 'dry_struct_rbs',
-      git: 'https://github.com/seek-pass-oss/dry_struct_rbs',
+      git: 'https://github.com/seek-oss/dry_struct_rbs',
       branch: 'master'
 end
 ```
@@ -102,6 +102,45 @@ end
 ```
 
 The gem handles various complex dry-types constructs and automatically maps them to their appropriate RBS equivalents.
+
+<details> <summary>Mermaid Diagram (click to expand)</summary>
+
+```mermaid
+flowchart TD
+    subgraph Step1["Traverse Ruby AST"]
+        Order1[Order]
+        Product1[Product]
+        id1[id: Types::Integer]
+        name1[name: Types::String]
+        price1[price: Types::Float]
+        Order1 --> Product1
+        Product1 --> id1
+        Product1 --> name1
+        Product1 --> price1
+    end
+
+    subgraph Step2["Convert DRY Types to RBS Types"]
+        idconv[Types::Integer → Integer]
+        nameconv[Types::String → String]
+        priceconv[Types::Float → Float]
+    end
+
+    subgraph Step3["Build RBS AST"]
+        id2[id: Integer]
+        name2[name: String]
+        price2[price: Float]
+        Product2[Product]
+        Order2[Order]
+        id2 --> Product2
+        name2 --> Product2
+        price2 --> Product2
+        Product2 --> Order2
+    end
+
+    Step1 --> Step2
+    Step2 --> Step3
+```
+</details>
 
 ## Contributing
 
