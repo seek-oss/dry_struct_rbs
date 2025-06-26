@@ -103,11 +103,11 @@ end
 
 The gem handles various complex dry-types constructs and automatically maps them to their appropriate RBS equivalents.
 
-## Workflow overview
+<details> <summary>Mermaid Diagram (click to expand)</summary>
 
-```text
+```mermaid
 flowchart TD
-    subgraph Step1["1. Traverse Ruby AST"]
+    subgraph Step1["Traverse Ruby AST"]
         Order1[Order]
         Product1[Product]
         id1[id: Types::Integer]
@@ -119,27 +119,28 @@ flowchart TD
         Product1 --> price1
     end
 
-    subgraph Step2["2. Convert DRY Types to RBS Types"]
+    subgraph Step2["Convert DRY Types to RBS Types"]
         idconv[Types::Integer → Integer]
         nameconv[Types::String → String]
         priceconv[Types::Float → Float]
     end
 
-    subgraph Step3["3. Build RBS AST"]
-        Order2[Order]
-        Product2[Product]
+    subgraph Step3["Build RBS AST"]
         id2[id: Integer]
         name2[name: String]
         price2[price: Float]
-        Order2 --> Product2
-        Product2 --> id2
-        Product2 --> name2
-        Product2 --> price2
+        Product2[Product]
+        Order2[Order]
+        id2 --> Product2
+        name2 --> Product2
+        price2 --> Product2
+        Product2 --> Order2
     end
 
     Step1 --> Step2
     Step2 --> Step3
 ```
+</details>
 
 ## Contributing
 
