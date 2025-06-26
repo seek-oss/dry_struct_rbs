@@ -9,7 +9,7 @@ Add to your Gemfile in the development group:
 ```ruby
 group :development do
   gem 'dry_struct_rbs',
-      git: 'https://github.com/seek-pass-oss/dry_struct_rbs',
+      git: 'https://github.com/seek-oss/dry_struct_rbs',
       branch: 'master'
 end
 ```
